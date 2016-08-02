@@ -12,7 +12,7 @@ require 'test_aggregation'
 
 FinalAPI.setup
 FinalAPI.logger = Logger.new(StringIO.new)
-# ActiveRecord::Base.logger = Logger.new(STDOUT)
+FinalAPI.logger.level = FinalAPI.config.log_level || Logger::DEBUG
 
 
 DatabaseCleaner.clean_with(:truncation)

@@ -1,18 +1,26 @@
-production:
-  sentry_dsn: http://example.com/...
-
+defaults: &defaults
+  log_level: :info
+  origin_whitelist: '*'
+  allowed_origin: '*'
+  log_file_storage_path: /tmp
   database:
+    adapter: postgresql
     host: localhost
-    database: travis_production
-    username: <%= ENV['USER'] %>
+    database: travis
+    username: postgres
+    password:
+  test_results_database:
+    adapter: postgresql
+    host: localhost
+    database: travis_test_results
+    username: postgres
+    password:
   amqp:
     host: localhost
     port: 5672
     username: travisci_worker
     password: travisci_worker_password
     vhost: travisci.development
-  test_results:
-    results_path: '/data/final-ci/test-results'
   ddtf:
     command_node_queue: commands.windows.ussnode
     node_queue: builds.windows.ussnode
@@ -22,56 +30,18 @@ production:
     clusters:
       cluster-name-1: cluster-endpoint-1
       cluster-name-2: cluster-endpoint-2
+    executable: TsdValidator
+    executable_params: '-param'
+
+production:
+  <<: *defaults
+
+  sentry_dsn: http://example.com/...
+  test_results:
+    results_path: '/tmp/test-results'
 
 development:
-  log_level: :debug
-  origin_whitelist: '*'
-  allowed_origin: '*'
-  log_file_storage_path: /var/log/travis-logs-storage
-  database:
-    database: travis_development
-    username: <%= ENV['USER'] %>
-  amqp:
-    host: localhost
-    port: 5672
-    username: travisci_worker
-    password: travisci_worker_password
-    vhost: travisci.development
-  ddtf:
-    command_node_queue: commands.windows.ussnode
-    cancel_command_prefix: cmd.
-    email_domain: mail.com
-  tsd_utils:
-    clusters:
-      cluster-name-1: cluster-endpoint-1
-      cluster-name-2: cluster-endpoint-2
+  <<: *defaults
 
 test:
-  log_level: :warn
-  log_file_storage_path: /tmp
-  logs_database:
-    adapter: postgresql
-    database: travis_test
-  database:
-    host: localhost
-    database: travis_test
-  amqp:
-    host: localhost
-    port: 5672
-    username: travisci_worker
-    password: travisci_worker_password
-    vhost: travisci.development
-  ddtf:
-    command_node_queue: commands.windows.ussnode
-    cancel_command_prefix: cmd.
-    email_domain: mail.com
-  tsd_utils:
-    clusters:
-      cluster-name-1: cluster-endpoint-1
-      cluster-name-2: cluster-endpoint-2
-  test_results_database:
-    adapter: postgresql
-    database: real_test_results_db_name
-    host: 10.5.0.47
-    username: development
-    password: development
+  <<: *defaults

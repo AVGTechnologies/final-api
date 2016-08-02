@@ -1,7 +1,7 @@
 sudo: false
 language: ruby
 rvm:
-  - ruby-2.2.2
+  - 2.2.2
 
 cache:
   - bundler
@@ -11,9 +11,12 @@ addons:
 
 services:
   - redis
+  - postgresql
 
 before_script:
   - 'cp config/database.yml.example config/database.yml'
   - 'cp config/travis.yml.example config/travis.yml'
-  - 'RAILS_ENV=test bundle exec rake db:create db:structure:load --trace'
+  - 'RAILS_ENV=test bundle exec rake db:create db:structure:load db:migrate --trace'
 
+script:
+  - bundle exec rspec
