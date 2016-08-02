@@ -3,16 +3,20 @@
 
 defaults: &defaults
   adapter: postgresql
-  encoding: unicode
-  pool: 5
-  min_messages: warning
   host: localhost
+  database: travis
+  username: postgres
+  password:
+  logs_database:
+    adapter: postgresql
+    host: localhost
+    database: travis_logs
+    username: postgres
+    password:
+
 
 development:
   <<: *defaults
-  database: travis_development
 
 test:
   <<: *defaults
-  database: travis_test
-
